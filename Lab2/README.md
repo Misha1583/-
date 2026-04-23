@@ -34,7 +34,7 @@ git add file1.txt
 
 
 
-![IMG_20260219_123810](Media\10.jpg)
+![IMG_20260219_123810](Media/10.jpg)
 
 
 
@@ -66,4 +66,4 @@ git log
 
 
 
-![IMG_20260223_123740](C:\Users\user\Documents\Звіти лабораторних робіт\reports\Lab2\Media\Screenshots\IMG_20260223_123740.jpg)
+![IMG_20260223_123740](Media/40.jpg)
