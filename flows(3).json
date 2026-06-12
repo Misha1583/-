@@ -1,0 +1,177 @@
+[
+    {
+        "id": "bf8254855e4f5f96",
+        "type": "tab",
+        "label": "Simulation",
+        "disabled": false,
+        "locked": true
+    },
+    {
+        "id": "c89b7431e79956bf",
+        "type": "inject",
+        "z": "bf8254855e4f5f96",
+        "name": "1 sec",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "1",
+        "once": true,
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 100,
+        "wires": [
+            [
+                "bf66b50d7ab32110"
+            ]
+        ]
+    },
+    {
+        "id": "bf66b50d7ab32110",
+        "type": "function",
+        "z": "bf8254855e4f5f96",
+        "name": "Simulation (sin + peaks)",
+        "func": "let t = Date.now()/1000;\nlet base = Math.sin(t);\nlet peak = Math.random()*0.5;\nlet power = (base+1+peak)*50;\n\nmsg.payload = {\n    time: new Date().toLocaleTimeString(),\n    power: parseFloat(power.toFixed(2))\n};\nreturn msg;",
+        "outputs": 1,
+        "x": 300,
+        "y": 100,
+        "wires": [
+            [
+                "33c37286a76f8c7c",
+                "8392ee3ec9ad362f"
+            ]
+        ]
+    },
+    {
+        "id": "33c37286a76f8c7c",
+        "type": "function",
+        "z": "bf8254855e4f5f96",
+        "name": "State + Counter",
+        "func": "let threshold = 60;\nlet power = msg.payload.power;\n\nmsg.payload.state = power > threshold ? \"ON\" : \"OFF\";\n\nlet prev = flow.get(\"prev\") || \"OFF\";\nlet count = flow.get(\"count\") || 0;\n\nif(msg.payload.state === \"ON\" && prev === \"OFF\"){\n    count++;\n}\n\nflow.set(\"prev\", msg.payload.state);\nflow.set(\"count\", count);\n\nmsg.payload.count = count;\nreturn msg;",
+        "outputs": 1,
+        "x": 520,
+        "y": 100,
+        "wires": [
+            [
+                "1ab0555bd0c17f48",
+                "697ce04980f38e60",
+                "42f7660fb97a3927"
+            ]
+        ]
+    },
+    {
+        "id": "42f7660fb97a3927",
+        "type": "function",
+        "z": "bf8254855e4f5f96",
+        "name": "To Log",
+        "func": "msg.payload = JSON.stringify(msg.payload)+\"\\n\";\nreturn msg;",
+        "outputs": 1,
+        "x": 720,
+        "y": 160,
+        "wires": [
+            [
+                "568c4835ab81061f"
+            ]
+        ]
+    },
+    {
+        "id": "1ab0555bd0c17f48",
+        "type": "debug",
+        "z": "bf8254855e4f5f96",
+        "name": "Debug",
+        "active": true,
+        "tosidebar": true,
+        "complete": "payload",
+        "x": 720,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "568c4835ab81061f",
+        "type": "file",
+        "z": "bf8254855e4f5f96",
+        "name": "Log file",
+        "filename": "hotel_log.txt",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "utf8",
+        "x": 900,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "697ce04980f38e60",
+        "type": "websocket out",
+        "z": "bf8254855e4f5f96",
+        "name": "WebSocket",
+        "server": "2fa8ac7aca0eba31",
+        "x": 720,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "8392ee3ec9ad362f",
+        "type": "ui_chart",
+        "z": "bf8254855e4f5f96",
+        "name": "Power chart",
+        "group": "ui_group",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Електроспоживання",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "No data",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": "60",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "outputs": 1,
+        "x": 550,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2fa8ac7aca0eba31",
+        "type": "websocket-listener",
+        "path": "/ws/hotel",
+        "wholemsg": "false"
+    },
+    {
+        "id": "ui_group",
+        "type": "ui_group",
+        "name": "Dashboard",
+        "tab": "ui_tab",
+        "order": 1,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "ui_tab",
+        "type": "ui_tab",
+        "name": "MQTT Monitor",
+        "icon": "dashboard",
+        "order": 1
+    },
+    {
+        "id": "852dd127e1ef9fb5",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6"
+        }
+    }
+]

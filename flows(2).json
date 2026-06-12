@@ -1,0 +1,61 @@
+[
+    {
+        "id": "862e88fb3c62ff6a",
+        "type": "telegram receiver",
+        "z": "fa35b16515a576ae",
+        "name": "",
+        "bot": "fc7de4cfb2ccb60d",
+        "saveDataDir": "",
+        "filterCommands": false,
+        "hasinput": false,
+        "inputs": 0,
+        "handleallupdates": false,
+        "handleprocessupdates": false,
+        "x": 210,
+        "y": 280,
+        "wires": [
+            [
+                "42c1f84538c56f81",
+                "96763dd8b71beffc"
+            ],
+            [
+                "c3d49783dc91141d"
+            ]
+        ]
+    },
+    {
+        "id": "fc7de4cfb2ccb60d",
+        "type": "telegram bot",
+        "botname": " t.me/RPI_MotsnyiMisha_Bot.",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "1017b00a0614dfd5",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-telegrambot": "17.4.12"
+        }
+    }
+]
