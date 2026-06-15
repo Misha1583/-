@@ -1,177 +1,330 @@
 [
     {
-        "id": "bf8254855e4f5f96",
+        "id": "6b55e2c8bc05c78d",
         "type": "tab",
-        "label": "Simulation",
+        "label": "Flow 1",
         "disabled": false,
-        "locked": true
+        "info": "",
+        "env": []
     },
     {
-        "id": "c89b7431e79956bf",
+        "id": "6eb091ed922030f4",
+        "type": "telegram receiver",
+        "z": "6b55e2c8bc05c78d",
+        "name": "/start",
+        "bot": "8a56b7eddd0fe774",
+        "saveDataDir": "",
+        "filterCommands": false,
+        "hasinput": false,
+        "inputs": 0,
+        "handleallupdates": false,
+        "handleprocessupdates": false,
+        "x": 190,
+        "y": 180,
+        "wires": [
+            [
+                "1d20b3020a416f94"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "e8d96cb2f1ed8ed9",
+        "type": "telegram sender",
+        "z": "6b55e2c8bc05c78d",
+        "name": "",
+        "bot": "8a56b7eddd0fe774",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 730,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1d20b3020a416f94",
+        "type": "function",
+        "z": "6b55e2c8bc05c78d",
+        "name": "Наповнення буферу",
+        "func": "let txtmsg = \"/start - показати базові команди\\r\\n\";\ntxtmsg += \"/sp - виставлення уставок\\r\\n\";\ntxtmsg += \"/pv - отримання плинних значень\\r\\n\";\ntxtmsg += \"/alm - список активних тривог\\r\\n\";\ntxtmsg += \"/rprt - сформувати звіт\\r\\n\";\nmsg.payload.content = txtmsg;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 180,
+        "wires": [
+            [
+                "e8d96cb2f1ed8ed9"
+            ]
+        ]
+    },
+    {
+        "id": "47bf5476307ea659",
         "type": "inject",
-        "z": "bf8254855e4f5f96",
-        "name": "1 sec",
+        "z": "6b55e2c8bc05c78d",
+        "name": "",
         "props": [
             {
                 "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
             }
         ],
         "repeat": "1",
-        "once": true,
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 100,
+        "x": 450,
         "y": 100,
         "wires": [
             [
-                "bf66b50d7ab32110"
+                "e8d96cb2f1ed8ed9"
             ]
         ]
     },
     {
-        "id": "bf66b50d7ab32110",
-        "type": "function",
-        "z": "bf8254855e4f5f96",
-        "name": "Simulation (sin + peaks)",
-        "func": "let t = Date.now()/1000;\nlet base = Math.sin(t);\nlet peak = Math.random()*0.5;\nlet power = (base+1+peak)*50;\n\nmsg.payload = {\n    time: new Date().toLocaleTimeString(),\n    power: parseFloat(power.toFixed(2))\n};\nreturn msg;",
-        "outputs": 1,
-        "x": 300,
-        "y": 100,
+        "id": "7579b9cab85a30d1",
+        "type": "inject",
+        "z": "6b55e2c8bc05c78d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 210,
+        "y": 360,
         "wires": [
             [
-                "33c37286a76f8c7c",
-                "8392ee3ec9ad362f"
+                "5a026701d5136b46"
             ]
         ]
     },
     {
-        "id": "33c37286a76f8c7c",
-        "type": "function",
-        "z": "bf8254855e4f5f96",
-        "name": "State + Counter",
-        "func": "let threshold = 60;\nlet power = msg.payload.power;\n\nmsg.payload.state = power > threshold ? \"ON\" : \"OFF\";\n\nlet prev = flow.get(\"prev\") || \"OFF\";\nlet count = flow.get(\"count\") || 0;\n\nif(msg.payload.state === \"ON\" && prev === \"OFF\"){\n    count++;\n}\n\nflow.set(\"prev\", msg.payload.state);\nflow.set(\"count\", count);\n\nmsg.payload.count = count;\nreturn msg;",
-        "outputs": 1,
-        "x": 520,
-        "y": 100,
-        "wires": [
-            [
-                "1ab0555bd0c17f48",
-                "697ce04980f38e60",
-                "42f7660fb97a3927"
-            ]
-        ]
-    },
-    {
-        "id": "42f7660fb97a3927",
-        "type": "function",
-        "z": "bf8254855e4f5f96",
-        "name": "To Log",
-        "func": "msg.payload = JSON.stringify(msg.payload)+\"\\n\";\nreturn msg;",
-        "outputs": 1,
-        "x": 720,
-        "y": 160,
-        "wires": [
-            [
-                "568c4835ab81061f"
-            ]
-        ]
-    },
-    {
-        "id": "1ab0555bd0c17f48",
+        "id": "f228bc740a1d81d2",
         "type": "debug",
-        "z": "bf8254855e4f5f96",
-        "name": "Debug",
+        "z": "6b55e2c8bc05c78d",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "5a026701d5136b46",
+        "type": "function",
+        "z": "6b55e2c8bc05c78d",
+        "name": "Наповнення буферу",
+        "func": "let now = new Date ();//сьогодні\n//trend - 2-мірний масив 3x60, на 60 останніх значень \n//читання з контексту потоку або ініціалізація масиву-буферу\nlet trend = flow.get (\"trend\") || [[now.toLocaleString()],[0],[0]];\nlet l = trend[0].length;    //довжина мавису\n//з кожним викликом збільшуємо градуси в радіанах\nlet rad = trend[1][l-1] + Math.PI/5;   \nif (rad>=Math.PI*2) rad=0;//обнуляємо після повного кола\nlet val = Math.sin (rad);   //вираховуємо синус\n//на \"верх\" масиву добавляємо елементи \ntrend[0].push (now.toLocaleString());//дата час\ntrend[1].push (rad);    //радіани\ntrend[2].push (val);    //значення синусу\n//якщо масив заповнився до 60\nif (trend[0].length >60){\n    trend[0].shift ();//вилучаємо перший (найстаріший) елемент\n    trend[1].shift ();\n    trend[2].shift ();\n    //після цього масиви повинні зменшитися на 1 елемент (60) \n    //і зсунутися вниз\n    //у випадку, якщо раптом елементів більше 60\n    //наприклад були добавлені випадково стороннім кодом\n    //зробити кількість елементів =60\n    trend[0].length = 60;//\n    trend[1].length = 60;\n    trend[2].length = 60; \n}\nflow.set (\"trend\", trend);//записати в контекст потоку\nlet rtdb = { //глобальна змінна\n    trend: trend,\n    rad: rad,\n    val: val\n}\nglobal.set (\"rtdb\", rtdb);\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 360,
+        "wires": [
+            [
+                "f228bc740a1d81d2"
+            ]
+        ]
+    },
+    {
+        "id": "a3b467adb8ecfe27",
+        "type": "telegram sender",
+        "z": "6b55e2c8bc05c78d",
+        "name": "",
+        "bot": "8a56b7eddd0fe774",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 690,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7c53b9eadd840f47",
+        "type": "inject",
+        "z": "6b55e2c8bc05c78d",
+        "name": "1s",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 540,
+        "wires": [
+            [
+                "325a5fbc0b905030"
+            ]
+        ]
+    },
+    {
+        "id": "325a5fbc0b905030",
+        "type": "function",
+        "z": "6b55e2c8bc05c78d",
+        "name": "Alarm",
+        "func": "let rtdb = global.get (\"rtdb\") || {}; \nlet alm = global.get (\"alm\") || { //система тривог \n    state:{radHI:false, valHI:false}, //стан тривог \n    sp: {radHI:10.0, valHI:2.0}     //уставки тривог\n    };\n\nlet almmsg = \"\";\n//умова тривоги активна?\nlet alm_radHI = rtdb.rad > alm.sp.radHI;\nlet alm_valHI = rtdb.val > alm.sp.valHI;\n//якщо тривога тільки активувалася\nif (alm_radHI && !alm.state.radHI) {\n    almmsg += \"Радіани дорвінюють \" + rtdb.rad + \" , що вище зданого значення \" + alm.sp.radHI + \"\\r\\n\";\n}\nif (alm_valHI && !alm.state.valHI) {\n    almmsg += \"Синус дорвінює \" + rtdb.val + \" , що вище зданого значення \" + alm.sp.valHI + \"\\r\\n\"\n}\n//запис у стан тривоги\nalm.state.radHI = alm_radHI;\nalm.state.valHI = alm_valHI;\n//збереження станів тривоги в глобальному контексті\nglobal.set (\"alm\", alm);\n//якщо хоча виникла хоча б одна тривога - відправка повідомлень \nif (almmsg.length > 1) {\n    msg.payload = {chatId : #######, //тут має бути ваш ідентифікатор\n                   type : 'message', \n                   content : almmsg}\n    return msg;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 7,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 540,
+        "wires": [
+            [
+                "a3b467adb8ecfe27",
+                "ae80f1de5ae5b581"
+            ]
+        ]
+    },
+    {
+        "id": "ae80f1de5ae5b581",
+        "type": "debug",
+        "z": "6b55e2c8bc05c78d",
+        "name": "",
         "active": true,
         "tosidebar": true,
+        "console": false,
+        "tostatus": false,
         "complete": "payload",
-        "x": 720,
-        "y": 60,
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 660,
         "wires": []
     },
     {
-        "id": "568c4835ab81061f",
-        "type": "file",
-        "z": "bf8254855e4f5f96",
-        "name": "Log file",
-        "filename": "hotel_log.txt",
-        "appendNewline": false,
-        "createDir": true,
-        "overwriteFile": "false",
-        "encoding": "utf8",
-        "x": 900,
-        "y": 160,
+        "id": "b118c232d673eea3",
+        "type": "inject",
+        "z": "6b55e2c8bc05c78d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 740,
+        "wires": [
+            [
+                "78469500f78529a1"
+            ]
+        ]
+    },
+    {
+        "id": "78469500f78529a1",
+        "type": "change",
+        "z": "6b55e2c8bc05c78d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "alm.sp.radHI",
+                "pt": "global",
+                "to": "3",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 740,
         "wires": [
             []
         ]
     },
     {
-        "id": "697ce04980f38e60",
-        "type": "websocket out",
-        "z": "bf8254855e4f5f96",
-        "name": "WebSocket",
-        "server": "2fa8ac7aca0eba31",
-        "x": 720,
-        "y": 100,
-        "wires": []
+        "id": "8a56b7eddd0fe774",
+        "type": "telegram bot",
+        "botname": "@RPI_MishaStudy_Bot",
+        "usernames": "{global.get(\"usernames\")}",
+        "chatids": "{context.global.chatids}",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
     },
     {
-        "id": "8392ee3ec9ad362f",
-        "type": "ui_chart",
-        "z": "bf8254855e4f5f96",
-        "name": "Power chart",
-        "group": "ui_group",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "label": "Електроспоживання",
-        "chartType": "line",
-        "legend": "false",
-        "xformat": "HH:mm:ss",
-        "interpolate": "linear",
-        "nodata": "No data",
-        "dot": false,
-        "ymin": "0",
-        "ymax": "100",
-        "removeOlder": "60",
-        "removeOlderPoints": "",
-        "removeOlderUnit": "60",
-        "cutout": 0,
-        "useOneColor": false,
-        "outputs": 1,
-        "x": 550,
-        "y": 220,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "2fa8ac7aca0eba31",
-        "type": "websocket-listener",
-        "path": "/ws/hotel",
-        "wholemsg": "false"
-    },
-    {
-        "id": "ui_group",
-        "type": "ui_group",
-        "name": "Dashboard",
-        "tab": "ui_tab",
-        "order": 1,
-        "disp": true,
-        "width": "6"
-    },
-    {
-        "id": "ui_tab",
-        "type": "ui_tab",
-        "name": "MQTT Monitor",
-        "icon": "dashboard",
-        "order": 1
-    },
-    {
-        "id": "852dd127e1ef9fb5",
+        "id": "ef4c86de2304a5da",
         "type": "global-config",
         "env": [],
         "modules": {
-            "node-red-dashboard": "3.6.6"
+            "node-red-contrib-telegrambot": "17.4.12"
         }
     }
 ]
